@@ -1,0 +1,8 @@
+name: fruit-sorter
+version: 1.0.0
+description: >
+  Automatic fruit-sorting 6DOF robotic arm. Camera + YOLO + HSV on the
+  Linux side, PCA9685 servo control on the MCU side, web dashboard on
+  port 8000.
+ports:
+  - 8000
