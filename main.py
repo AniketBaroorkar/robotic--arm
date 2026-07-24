@@ -16,8 +16,8 @@ from arduino.app_bricks.web_ui import WebUI
 # ---------------------------------------------------------------- tuning ---
 # The brick runs at a permissive floor and Python owns the real threshold,
 # so the slider has one source of truth instead of two that drift apart.
-BRICK_CONFIDENCE_FLOOR = 0.20
-confidence_threshold = 0.40
+BRICK_CONFIDENCE_FLOOR = 0.05
+confidence_threshold = 0.30
 
 MINIMUM_COLOR_RATIO = 0.10
 REQUIRED_STABLE_DETECTIONS = 3
@@ -58,6 +58,7 @@ frame_width = FALLBACK_FRAME_WIDTH
 frame_height = FALLBACK_FRAME_HEIGHT
 frame_source = None
 seen_labels = set()
+last_scan_time = 0.0
 
 
 activity_log = deque(maxlen=40)
@@ -291,6 +292,21 @@ def process_detections(detections: dict):
         robot_busy = False
         robot_error = "Arm never reported finished. Check the sketch and Bridge."
         log(robot_error)
+
+    # Print everything the model sees, with scores. This is how you find out
+    # whether the fruit is scoring low or not being proposed at all.
+    global last_scan_time
+    now_scan = time.monotonic()
+    if now_scan - last_scan_time > 1.0:
+        last_scan_time = now_scan
+        seen = []
+        for raw, objs in detections.items():
+            if not isinstance(objs, list):
+                continue
+            for o in objs:
+                if isinstance(o, dict):
+                    seen.append(f"{str(raw).strip().lower()} {float(o.get('confidence', 0)):.2f}")
+        print("SCAN: " + (", ".join(seen) if seen else "nothing above floor"), flush=True)
 
     for raw in detections:
         name = str(raw).strip().lower()
