@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apple / banana pickup</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="shell">
+
+  <section class="panel feed">
+    <div class="panel-head">
+      <h2>Camera preview</h2>
+      <span class="conn" id="conn">connecting</span>
+    </div>
+    <div class="preview">
+      <iframe id="preview" title="Camera preview"></iframe>
+      <p class="preview-fallback" id="preview-fallback">Waiting for the camera stream on port 4912.</p>
+    </div>
+    <p class="caption">Detection space <span id="framesize">416 x 416</span></p>
+  </section>
+
+  <section class="panel readout">
+    <h1 id="label" class="label idle">no fruit</h1>
+
+    <div class="meter">
+      <span class="meter-name">AI confidence</span>
+      <span class="meter-value" id="conf-value">0%</span>
+      <div class="bar"><i id="conf-bar"></i></div>
+    </div>
+
+    <div class="meter">
+      <span class="meter-name">Colour match</span>
+      <span class="meter-value" id="colour-value">unchecked</span>
+      <div class="bar"><i id="colour-bar" class="colour"></i></div>
+    </div>
+
+    <dl class="stats">
+      <div><dt>Centre X</dt><dd id="cx">&ndash;</dd></div>
+      <div><dt>Centre Y</dt><dd id="cy">&ndash;</dd></div>
+      <div><dt>Stable</dt><dd id="stable">0 / 3</dd></div>
+      <div><dt>Cooldown</dt><dd id="cooldown">0 s</dd></div>
+    </dl>
+  </section>
+
+  <section class="panel gates">
+    <h2>Why it will or will not pick</h2>
+    <ul id="gates"><li class="empty">No frames received yet.</li></ul>
+  </section>
+
+  <section class="panel controls">
+    <h2>Controls</h2>
+
+    <label class="toggle">
+      <input type="checkbox" id="arm">
+      <span class="toggle-name">Auto-pick</span>
+      <span class="badge" id="arm-badge">disarmed</span>
+    </label>
+    <p class="hint">Calibrate the poses in sketch.ino before arming. While
+      disarmed the vision pipeline runs but the arm never moves on its own.</p>
+
+    <label class="slider" for="confidence">
+      <span>Confidence threshold</span>
+      <output id="confidence-value">0.40</output>
+    </label>
+    <input type="range" id="confidence" min="0.10" max="0.90" step="0.01" value="0.40">
+
+    <div class="buttons">
+      <button id="home" type="button">Send home</button>
+      <button id="clear" type="button">Clear error</button>
+    </div>
+
+    <p class="error" id="error" hidden></p>
+  </section>
+
+  <section class="panel activity">
+    <h2>Activity</h2>
+    <ol id="activity"></ol>
+  </section>
+
+</main>
+<script src="/socket.io/socket.io.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
