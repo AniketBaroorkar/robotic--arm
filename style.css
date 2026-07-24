@@ -92,6 +92,7 @@ h2 {
   transition: opacity .3s ease;
 }
 .preview iframe.ready { opacity: 1; }
+.preview-fallback[hidden] { display: none; }
 .preview-fallback {
   position: absolute;
   inset: 0;
